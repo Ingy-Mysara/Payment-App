@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 #include"card.h"
-typedef unsigned int uint8_t;
+typedef char uint8_t;
 
 EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
     EN_cardError_t Error;
