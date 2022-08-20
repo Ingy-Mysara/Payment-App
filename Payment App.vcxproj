@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Card\card.c" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="Server\server.c" />
     <ClCompile Include="Terminal\terminal.c" />
   </ItemGroup>

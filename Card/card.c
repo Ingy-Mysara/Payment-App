@@ -1,7 +1,7 @@
 #pragma warning(disable : 4996)
 #include<stdio.h>
 #include<string.h>
-#include"Header.h"
+#include"card.h"
 typedef unsigned int uint8_t;
 
 EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
@@ -127,15 +127,6 @@ EN_cardError_t getCardPAN(ST_cardData_t* cardData) {
         cardData->primaryAccountNumber[index] = tempPAN[index];
     }
     return Error;
-
-}
-
-int main() {
-    ST_cardData_t UserCardData;
-    printf("%d\n", getCardHolderName(&UserCardData));
-    printf("%d\n", getCardExpiryDate(&UserCardData));
-    printf("%d", getCardPAN(&UserCardData));
-
 
 }
 
