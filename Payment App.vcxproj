@@ -19,10 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Card\card.h" />
     <ClInclude Include="Server\server.h" />
+    <ClInclude Include="Terminal\terminal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Card\card.c" />
     <ClCompile Include="Server\server.c" />
+    <ClCompile Include="Terminal\terminal.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
