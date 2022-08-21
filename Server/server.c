@@ -3,54 +3,79 @@
 
 
 EN_transState_t transState;
+EN_serverError_t serverError;
+
+
+
+
 EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 {
-	// should validate the data 
-	
-	
-	uint8_t targetAccountNumber = transData->cardHolderData.primaryAccountNumber;
-	int arraySize = (sizeof(accountsDB) / sizeof(accountsDB[0]));
-	
-	
-	
-	int accountIndex = linearSearch(accountsDB, arraySize, targetAccountNumber);
-	if (accountIndex == -1) {
+	ST_accountsDB_t ptrToTargetAcc;
+
+
+	transState = isValidAccount(transData->cardHolderData, ptrToTargetAcc); // ptrToTargetAcc updated
+	if (transState == SERVER_OK) {
+
+
+		transState = isAmountAvailable(&transData->terminalData, &ptrToTargetAcc);
+		if (transState != SERVER_OK) {// check if amount available
+			// amount not available
+			transState = DECLINED_INSUFFICIENT_FUND;
+			return transState;
+		}
+
+
+		transState = isBlockedAccount(&ptrToTargetAcc);
+		if (transState == BLOCKED_ACCOUNT) {// check account state
+			transState = DECLINED_STOLEN_CARD;
+			return transState;
+		}
+
+
+		transState = saveTransaction(transData);
+		if (transState = SAVING_FAILED) {
+			transState = INTERNAL_SERVER_ERROR;
+			return transState;
+		}
+		else {
+			transState = APPROVED;
+			return transState;
+		}
+
+	}
+	else { // account dosent Exist
 		transState = FRAUD_CARD;
-		printf("card not found \n");
-		return transState;
-	}
-	// at this point i have account endex
-	int neededAmount = transData->terminalData.transAmount;
-
-	ST_accountsDB_t targetAccount = accountsDB[accountIndex];
-	float availableAmount = targetAccount.balance;
-
-	if (availableAmount < neededAmount) {
-		printf("avaliable amount is less than needed amount \n");
-		transState = DECLINED_INSUFFICIENT_FUND;
-		return transState;
-	}
-	
-	if (targetAccount.state == BLOCKED) {//// check Blocked or 1
-		transState = DECLINED_STOLEN_CARD;
-		printf("911 is on their way \n");
 		return transState;
 	}
 
-	//missing if condidion depending on save transaction function
 
-	transState = APPROVED;
-	return transState;
 }
 
 EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t accountRefrence)
 {
-	return;
+	int arraySize = (sizeof(accountsDB) / sizeof(accountsDB[0]));
+	uint8_t targetPAN = cardData.primaryAccountNumber;
+	int accountindex = linearSearch(accountsDB, arraySize, targetPAN);
+	if (accountindex == -1) {
+		serverError = ACCOUNT_NOT_FOUND;
+	}
+	else {
+		serverError = SERVER_OK;
+	}
+
+	return serverError;
 }
 
 EN_serverError_t isBlockedAccount(ST_accountsDB_t* accountRefrence)
 {
-	return;
+	if (accountRefrence->state == BLOCKED) {
+		transState = BLOCKED_ACCOUNT;
+		return transState;
+	}
+	else {
+		transState = SERVER_OK;
+		return transState;
+	}
 }
 
 EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, ST_accountsDB_t* accountRefrence)
