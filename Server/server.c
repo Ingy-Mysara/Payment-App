@@ -24,7 +24,15 @@ EN_serverError_t isAmountAvailable(ST_terminalData_t* termData)
 
 EN_serverError_t saveTransaction(ST_transaction_t* transData)
 {
-	return;
+	static int seqNum = 0;
+	transactionsDB[seqNum].cardHolderData = transData->cardHolderData;
+	transactionsDB[seqNum].terminalData = transData->terminalData;
+	transactionsDB[seqNum].transactionSequenceNumber = seqNum;
+	transactionsDB[seqNum].transState = transData->transState;
+	if (getTransaction(seqNum, transData) != APPROVED) {
+		return SAVING_FAILED;
+	}
+	return SERVER_OK;
 }
 
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t* transData)
