@@ -49,11 +49,7 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
     int yearInstring[3];
     gets(yearInstring);
 
-    /*int monthInInteger = ((int)cardData->cardExpirationDate[0]) * 10 + (int)cardData->cardExpirationDate[1];
-    int yearInInteger = ((int)cardData->cardExpirationDate[3]) * 10 + (int)cardData->cardExpirationDate[4];*/
-
-    /*int monthInInteger = (int)monthInstring;
-    int yearInInteger = (int)yearInstring;*/
+    
 
     int monthInInteger;
     int yearInInteger;
