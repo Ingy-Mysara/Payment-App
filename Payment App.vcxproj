@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card\card.h" />
+    <ClInclude Include="LinearSearch.h" />
     <ClInclude Include="Server\server.h" />
     <ClInclude Include="Terminal\terminal.h" />
   </ItemGroup>

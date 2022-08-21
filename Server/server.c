@@ -53,21 +53,25 @@ EN_serverError_t isBlockedAccount(ST_accountsDB_t* accountRefrence)
 	return;
 }
 
-EN_serverError_t isAmountAvailable(ST_terminalData_t* termData)
+EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, ST_accountsDB_t* accountRefrence)
 {
-	printf("Amount to be deducted=%f\n", termData->transAmount);
-	
-	return;
+	//check if transaction amount is available or not
+	if (termData->transAmount > accountRefrence->balance) {
+		return LOW_BALANCE;
+	}
+	return SERVER_OK;
 }
 
 EN_serverError_t saveTransaction(ST_transaction_t* transData)
 {
-	static int seqNum = 0;
+	//SERVER_OK, SAVING_FAILED, TRANSACTION_NOT_FOUND, ACCOUNT_NOT_FOUND, LOW_BALANCE, BLOCKED_ACCOUNT
+	static int seqNum = -1;
+	seqNum++;
 	transactionsDB[seqNum].cardHolderData = transData->cardHolderData;
 	transactionsDB[seqNum].terminalData = transData->terminalData;
 	transactionsDB[seqNum].transactionSequenceNumber = seqNum;
-	transactionsDB[seqNum].transState = transData->transState;
-	if (getTransaction(seqNum, transData) != APPROVED) {
+	transactionsDB[seqNum].transState = receiveTransactionData(transData);
+	if (getTransaction(seqNum, transData) != SERVER_OK) {
 		return SAVING_FAILED;
 	}
 	return SERVER_OK;
@@ -75,5 +79,13 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData)
 
 EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transaction_t* transData)
 {
-	return;
+	int seqNum = transactionSequenceNumber;
+	if (transactionsDB[seqNum].cardHolderData.primaryAccountNumber != 0) {
+		transData->cardHolderData = transactionsDB[seqNum].cardHolderData;
+		transData->terminalData = transactionsDB[seqNum].terminalData;
+		transData->transState = transactionsDB[seqNum].transState;
+		transData->transactionSequenceNumber = transactionsDB[seqNum].transactionSequenceNumber;
+		return SERVER_OK;
+	}
+	return TRANSACTION_NOT_FOUND;
 }
