@@ -15,30 +15,69 @@ En_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 		return WRONG_DATE;
 	else return TERMINAL_OK;
 }
+//En_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
+//{
+//	// inCard    mm/yy
+//	// inTrans   dd/mm/yyyy
+//	//           0123456789
+//	if (cardData.cardExpirationDate[3] < termData.transactionDate[8])
+//	{
+//		return EXPIRED_CARD;
+//	}
+//	else if (cardData.cardExpirationDate[3] == termData.transactionDate[8])
+//	{
+//		if (cardData.cardExpirationDate[4] > termData.transactionDate[9])
+//			return TERMINAL_OK;
+//		else
+//		{
+//			if (cardData.cardExpirationDate[1] < termData.transactionDate[4])
+//				return EXPIRED_CARD;
+//			else if (cardData.cardExpirationDate[1] > termData.transactionDate[4])
+//				return TERMINAL_OK;
+//			else {
+//				if (cardData.cardExpirationDate[2] > termData.transactionDate[5])
+//					return TERMINAL_OK;
+//				else
+//					return EXPIRED_CARD;
+//			}
+//		}
+//	}
+//}
+
 En_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
 {
-	if (cardData.cardExpirationDate[4] < termData.transactionDate[9])
+	// inCard    mm/yy
+	// inTrans   dd/mm/yyyy
+	//           0123456789
+	
+
+	if ((int)(cardData.cardExpirationDate[3]) < (int)(termData.transactionDate[8]))
 	{
+		printf("expired \n");
 		return EXPIRED_CARD;
 	}
-	else if (cardData.cardExpirationDate[4] == termData.transactionDate[9])
-	{
-		if (cardData.cardExpirationDate[5] > termData.transactionDate[10])
+	if ((int)(cardData.cardExpirationDate[3]) == (int)(termData.transactionDate[8])) {
+		if ((int)cardData.cardExpirationDate[4] < (int)(termData.transactionDate[9])) {
+			printf("expired \n");
+			return EXPIRED_CARD;
+		}
+		else if ((int)cardData.cardExpirationDate[4] > (int)termData.transactionDate[9]) {
 			return TERMINAL_OK;
-		else
-		{
-			if (cardData.cardExpirationDate[1] < termData.transactionDate[4])
+		}
+		else {// same year now check for month 
+			int CardmonthInInt = (int)(cardData.cardExpirationDate[0]) + (int)(cardData.cardExpirationDate[1]);
+			int tranmonthInInt = (int)(termData.transactionDate[3]) + (int)(termData.transactionDate[4]);
+			if (CardmonthInInt <= tranmonthInInt) {
+				printf("expired \n");
 				return EXPIRED_CARD;
-			else if (cardData.cardExpirationDate[1] > termData.transactionDate[4])
-				return TERMINAL_OK;
-			else {
-				if (cardData.cardExpirationDate[2] > termData.transactionDate[5])
-					return TERMINAL_OK;
-				else
-					return EXPIRED_CARD;
 			}
+			else {
+				return TERMINAL_OK;
+			}
+
 		}
 	}
+	
 }
 
 

@@ -92,7 +92,7 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 	strcat(tempExpiryDate, yearInstring);
 	puts(tempExpiryDate);
 	for (int index = 0; index < strlen(cardData->cardExpirationDate); index++) {
-		cardData->cardExpirationDate[index] = monthInstring[index];
+		cardData->cardExpirationDate[index] = tempExpiryDate[index];
 	}
 
 
