@@ -6,7 +6,7 @@ typedef char uint8_t;
 
 EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
     EN_cardError_t Error;
-    printf("enter userName \n");
+    printf("enter userName of max 24 char and min 20 char \n");
     char tempName[25];
     gets(tempName);
     if (strlen(tempName) < 25 && strlen(tempName) > 19 && tempName != NULL) {
@@ -34,7 +34,9 @@ EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
         Error = WRONG_NAME;
         return Error;
     }
+    
     strcpy(cardData->cardHolderName, tempName);
+    printf("cardData %s \n", cardData->cardHolderName);
     return Error;
 }
 
