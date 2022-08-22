@@ -68,7 +68,10 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t* accountRefrence)
 {
 	//int arraySize = (sizeof(accountsDB) / sizeof(accountsDB[0]));
-	uint8_t targetPAN = cardData.primaryAccountNumber;
+	uint8_t targetPAN[20];
+	for (int i = 0; i < 10; i++) {
+		targetPAN[i] = cardData.primaryAccountNumber;
+	}
 	int accountindex = linearSearch(accountsDB, 10, targetPAN);
 
 	if (accountindex == -1) {
