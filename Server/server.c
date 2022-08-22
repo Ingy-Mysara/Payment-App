@@ -8,16 +8,16 @@ EN_serverError_t serverError;
 
 ST_accountsDB_t accountsDB[10] = {
 	//balance status acc number
-	{(float)1000, RUNNING, "378282246310005"},
-	{(float)200, BLOCKED,"371449635398431"},
-	{(float)100000, RUNNING, "5610591081018250"},
-	{(float)1400, RUNNING, "6011111111111117"},
-	{(float)928364, RUNNING, "6011000990139424"},
-	{(float)1110, RUNNING, "3530111333300000"},
-	{(float)1092348, RUNNING, "3566002020360505"},
-	{(float)120, RUNNING, "5555555555554444"},
-	{(float)1120938, RUNNING, "5105105105105100"},
-	{(float)200000, RUNNING, "4012888888881881"}
+	{(float)1000, RUNNING, "12345678912345672"},
+	{(float)200, BLOCKED,"12345678912345671"},
+	{(float)100000, RUNNING, "12345678912345671"},
+	{(float)1400, RUNNING, "12345678912345671"},
+	{(float)928364, RUNNING, "12345678912345671"},
+	{(float)1110, RUNNING, "12345678912345671"},
+	{(float)1092348, RUNNING, "12345678912345671"},
+	{(float)120, RUNNING, "12345678912345671"},
+	{(float)1120938, RUNNING, "12345678912345671"},
+	{(float)200000, RUNNING, "12345678912345671"}
 };
 
 
@@ -35,6 +35,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 		if (transState != SERVER_OK) {// check if amount available
 			// amount not available
 			transState = DECLINED_INSUFFICIENT_FUND;
+			printf("DECLINED_INSUFFICIENT_FUND \n");
 			return transState;
 		}
 
@@ -42,6 +43,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 		transState = isBlockedAccount(ptrToTargetAcc);
 		if (transState == BLOCKED_ACCOUNT) {// check account state
 			transState = DECLINED_STOLEN_CARD;
+			printf("DECLINED_STOLEN_CARD \n");
 			return transState;
 		}
 
@@ -49,6 +51,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 		transState = saveTransaction(transData);
 		if (transState = SAVING_FAILED) {
 			transState = INTERNAL_SERVER_ERROR;
+			printf("INTERNAL_SERVER_ERROR \n");
 			return transState;
 		}
 		else {
@@ -59,6 +62,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 	}
 	else { // account dosent Exist
 		transState = FRAUD_CARD;
+		printf("FRAUD_CARD \n");
 		return transState;
 	}
 
@@ -76,10 +80,12 @@ EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t* account
 
 	if (accountindex == -1) {
 		serverError = ACCOUNT_NOT_FOUND;
+		printf("ACCOUNT_NOT_FOUND \n");
 	}
 	else {
 		accountRefrence = &accountsDB[accountindex];
 		serverError = SERVER_OK;
+		printf("SERVER_OK \n");
 	}
 
 	return serverError;
