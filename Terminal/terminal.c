@@ -94,7 +94,7 @@ En_terminalError_t getTransactionAmount(ST_terminalData_t* termData)
 	printf("Enter Amount:\n");
 	scanf("%f", &amount);
 	termData->transAmount = amount;
-	printf("Deducted Amount will be: %f\n", termData->transAmount);
+	printf("Deducted Amount will be: %f EGP\n", termData->transAmount);
 	if (termData->transAmount <= 0)
 		return INVALID_AMOUNT;
 	else

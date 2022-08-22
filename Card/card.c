@@ -9,7 +9,7 @@ EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
 	printf("enter userName of max 24 char and min 20 char \n");
 	char tempName[25];
 	gets(tempName);
-	if (strlen(tempName) < 25 && strlen(tempName) > 19 && tempName != NULL) {
+	if ((strlen(tempName) < 25 && strlen(tempName) > 19) && tempName != '\0') {
 		for (int index = 0; index < strlen(tempName); index++) {
 			if (tempName[index] == '0' ||
 				tempName[index] == '1' ||
@@ -31,6 +31,7 @@ EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
 
 	}
 	else {
+		printf("WRONG_NAME\n");
 		Error = WRONG_NAME;
 		return Error;
 	}
@@ -48,10 +49,8 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 
 	gets(monthInstring);
 	printf("enter expiry year (of 2 digits) ex yy \n");
-	int yearInstring[3];
+	char yearInstring[3];
 	gets(yearInstring);
-
-
 
 	int monthInInteger;
 	int yearInInteger;
@@ -59,12 +58,10 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 	sscanf(yearInstring, "%d", &yearInInteger);
 
 	if (monthInInteger > 0 && monthInInteger <= 12) {
-
 		Error = CARD_OK;
 	}
 	else {
 		Error = WRONG_EXP_DATE;
-
 		return Error;
 	}
 
@@ -73,7 +70,6 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 	}
 	else {
 		Error = WRONG_EXP_DATE;
-
 		return Error;
 	}
 
@@ -95,9 +91,7 @@ EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 		cardData->cardExpirationDate[index] = tempExpiryDate[index];
 	}
 
-
 	return Error;
-
 }
 
 EN_cardError_t getCardPAN(ST_cardData_t* cardData) {
@@ -107,19 +101,21 @@ EN_cardError_t getCardPAN(ST_cardData_t* cardData) {
 	gets(tempPAN);
 	if (strlen(tempPAN) >= 16 && strlen(tempPAN) <= 19 && tempPAN != NULL) {
 		Error = CARD_OK;
+		printf("CARD_OK\n");
 	}
 	else {
 		Error = WRONG_PAN;
+		printf("WRONG_PAN\n");
 		return Error;
 	}
 	for (int index = 0; index < strlen(tempPAN); index++) {
 		if ((tempPAN[index] >= 'a' && tempPAN[index] <= 'z') ||
 			(tempPAN[index] >= 'A' && tempPAN[index] <= 'Z')) {
+			printf("WRONG_PAN\n");
 			Error = WRONG_PAN;
 			return Error;
 		}
 	}
-
 
 	for (int index = 0; index < strlen(cardData->primaryAccountNumber); index++) {
 		cardData->primaryAccountNumber[index] = tempPAN[index];
