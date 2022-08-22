@@ -6,7 +6,7 @@ EN_transState_t transState;
 EN_serverError_t serverError;
 
 
-ST_accountsDB_t accountsDB[10]={
+ST_accountsDB_t accountsDB[10] = {
 	//balance status acc number
 	{(float)1000, RUNNING, "378282246310005"},
 	{(float)200, BLOCKED,"371449635398431"},
@@ -19,9 +19,9 @@ ST_accountsDB_t accountsDB[10]={
 	{(float)1120938, RUNNING, "5105105105105100"},
 	{(float)200000, RUNNING, "4012888888881881"}
 };
- 
 
-ST_accountsDB_t * ptrToTargetAcc;
+
+ST_accountsDB_t* ptrToTargetAcc;
 EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 {
 	//ST_accountsDB_t ptrToTargetAcc= accountsDB[0] ;
@@ -65,12 +65,12 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 
 }
 
-EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t * accountRefrence)
+EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t* accountRefrence)
 {
 	//int arraySize = (sizeof(accountsDB) / sizeof(accountsDB[0]));
 	uint8_t targetPAN = cardData.primaryAccountNumber;
 	int accountindex = linearSearch(accountsDB, 10, targetPAN);
-	
+
 	if (accountindex == -1) {
 		serverError = ACCOUNT_NOT_FOUND;
 	}

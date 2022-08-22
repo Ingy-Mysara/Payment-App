@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application.h" />
     <ClInclude Include="Card\card.h" />
     <ClInclude Include="LinearSearch.h" />
     <ClInclude Include="Server\server.h" />

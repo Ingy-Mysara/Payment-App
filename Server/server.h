@@ -1,10 +1,14 @@
 #pragma once
 #ifndef SERVER_H
 #define SERVER_H
+#define _CRT_SECURE_NO_WARNINGS
 #include "../Card/card.h"
 #include "../Terminal/terminal.h"
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef char uint8_t;
+typedef unsigned int uint32_t;
 
 typedef enum EN_transState_t
 {
@@ -37,11 +41,11 @@ typedef struct ST_accountsDB_t
 }ST_accountsDB_t;
 
 ST_transaction_t transactionsDB[255];
-ST_accountsDB_t accountsDB[10]; 
+ST_accountsDB_t accountsDB[10];
 
 
 EN_transState_t receiveTransactionData(ST_transaction_t* transData);
-EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t *accountRefrence);
+EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t* accountRefrence);
 EN_serverError_t isBlockedAccount(ST_accountsDB_t* accountRefrence);
 EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, ST_accountsDB_t* accountRefrence);
 EN_serverError_t saveTransaction(ST_transaction_t* transData);
