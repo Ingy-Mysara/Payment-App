@@ -2,6 +2,7 @@
 #include"..\Card\card.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include<string.h>
 
 En_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 {
@@ -46,27 +47,57 @@ En_terminalError_t getTransactionDate(ST_terminalData_t* termData)
 
 En_terminalError_t isCardExpired(ST_cardData_t cardData, ST_terminalData_t termData)
 {
-	// inCard    mm/yy
-	// inTrans   dd/mm/yyyy
-	//           0123456789
-	
+	 /*inCard    mm/yy
+	 inTrans   dd/mm/yyyy
+	           0123456789*/
+	char cardmonth3 = cardData.cardExpirationDate[3];
+	int cardM3 = (int)cardmonth3 - 48;
 
-	if ((int)(cardData.cardExpirationDate[3]) < (int)(termData.transactionDate[8]))
+	char cardmonth4 = cardData.cardExpirationDate[4];
+	int cardM4 = (int)cardmonth4 - 48;
+	/////////////////////////////////////////////////////
+	char termmonth8 = (termData.transactionDate[8]);
+	int termM8 = (int)termmonth8 - 48;
+
+	char termmonth9 = (termData.transactionDate[9]);
+	int termM9 = (int)termmonth9 - 48;
+
+	char termmonth0 = termData.transactionDate[3];
+	char termmonth1 = termData.transactionDate[4];
+	int termM0 = (int)termmonth0 - 48;
+	int termM1 = (int)termmonth1 - 48;
+
+	char cardmonth0 = cardData.cardExpirationDate[0];
+	char cardmonth1 = cardData.cardExpirationDate[1];
+	int cardM0 = (int)cardmonth0 - 48;
+	int cardM1 = (int)cardmonth1 - 48;
+
+
+
+	if (cardM3 < termM8)
 	{
 		printf("expired \n");
 		return EXPIRED_CARD;
 	}
-	if ((int)(cardData.cardExpirationDate[3]) == (int)(termData.transactionDate[8])) {
-		if ((int)cardData.cardExpirationDate[4] < (int)(termData.transactionDate[9])) {
+	if (cardM3 == termM8) {
+		if (cardM4 < termM9) {
 			printf("expired \n");
 			return EXPIRED_CARD;
 		}
-		else if ((int)cardData.cardExpirationDate[4] > (int)termData.transactionDate[9]) {
+		else if (cardM4 > termM9) {
 			return TERMINAL_OK;
 		}
 		else {// same year now check for month 
-			int CardmonthInInt = (int)(cardData.cardExpirationDate[0]) + (int)(cardData.cardExpirationDate[1]);
-			int tranmonthInInt = (int)(termData.transactionDate[3]) + (int)(termData.transactionDate[4]);
+			
+			
+			int CardmonthInInt = cardM0 * 10 + cardM1;
+			
+			
+			
+			int tranmonthInInt = termM0 * 10 + termM1;
+
+			
+			
 			if (CardmonthInInt <= tranmonthInInt) {
 				printf("expired \n");
 				return EXPIRED_CARD;
