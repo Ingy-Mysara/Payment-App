@@ -7,8 +7,7 @@ int linearSearch(ST_accountsDB_t accountsDB[], char target[], int size) {
 	for (int i = 0; i < size; i++) {
 		// check whether the two strings are equal or not
 		if (strcmp(accountsDB[i].primaryAccountNumber, target) == 0) {
-			// if found return index of the customer
-			printf("acc found \n");
+			
 			return i;
 		}
 			

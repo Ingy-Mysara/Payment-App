@@ -44,10 +44,19 @@ EN_cardError_t getCardHolderName(ST_cardData_t* cardData) {
 EN_cardError_t getCardExpiryDate(ST_cardData_t* cardData) {
 	EN_cardError_t Error;
 
-	printf("enter expiry month \n");
-	char monthInstring[10];
+	printf("enter expiry month in form of 2 digits \n");
+	char monthInstring[3];
 
 	gets(monthInstring);
+	int lengthOfMonth = strlen(monthInstring);
+	//printf("lenth of month   %d \n", lengthOfMonth);
+
+	while (lengthOfMonth == 1) {
+		printf("month entered must be 2 digits For example if month is 5 write 05 \n");
+		gets(monthInstring);
+		lengthOfMonth = strlen(monthInstring);
+	}
+
 	printf("enter expiry year (of 2 digits) ex yy \n");
 	char yearInstring[3];
 	gets(yearInstring);

@@ -7,7 +7,7 @@ EN_serverError_t serverError;
 
 ST_accountsDB_t accountsDB[10] = {
 	//balance status acc number
-	{1000, RUNNING, "3782822463310005"},
+	{1000, RUNNING, "37828224633100057"},
 	{200, BLOCKED,"3714496353984231"},
 	{100000, RUNNING, "3787344936371000"},
 	{1400, RUNNING, "56105910810183250"},
@@ -23,13 +23,16 @@ ST_accountsDB_t accountsDB[10] = {
 
 EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 {
-	//ST_accountsDB_t ptrToTargetAcc= accountsDB[0] ;
+	
 	ST_accountsDB_t targetAcc;
-	ST_accountsDB_t* ptrToTargetAcc = &targetAcc;
-	transState = isValidAccount(transData->cardHolderData, ptrToTargetAcc); // ptrToTargetAcc updated
+	transState = isValidAccount(transData->cardHolderData, &targetAcc); // ptrToTargetAcc updated
+	
+
+
+
 	if (transState == SERVER_OK) {
 
-		transState = isAmountAvailable(&transData->terminalData, ptrToTargetAcc);
+		transState = isAmountAvailable(&transData->terminalData, &targetAcc);
 		if (transState != SERVER_OK) {// check if amount available
 			// amount not available
 			transState = DECLINED_INSUFFICIENT_FUND;
@@ -37,7 +40,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 			return transState;
 		}
 
-		transState = isBlockedAccount(ptrToTargetAcc);
+		transState = isBlockedAccount(&targetAcc);
 		if (transState == BLOCKED_ACCOUNT) {// check account state
 			transState = DECLINED_STOLEN_CARD;
 			printf("DECLINED_STOLEN_CARD \n");
@@ -53,6 +56,7 @@ EN_transState_t receiveTransactionData(ST_transaction_t* transData)
 		else {
 			transState = APPROVED;
 			printf("APPROVED\n");
+			printf("your current balance = %f \n", targetAcc.balance);
 			return transState;
 		}
 
@@ -79,9 +83,16 @@ EN_serverError_t isValidAccount(ST_cardData_t cardData, ST_accountsDB_t* account
 		printf("ACCOUNT_NOT_FOUND \n");
 	}
 	else {
-		accountRefrence = &accountsDB[accountindex];
+
+		accountRefrence->balance = accountsDB[accountindex].balance;
+		strcpy(accountRefrence->primaryAccountNumber ,accountsDB[accountindex].primaryAccountNumber);
+		accountRefrence->state = accountsDB[accountindex].state;
+		
+		
+
+
 		serverError = SERVER_OK;
-		printf("SERVER_OK \n");
+		
 	}
 	return serverError;
 }
@@ -95,15 +106,17 @@ EN_serverError_t isBlockedAccount(ST_accountsDB_t* accountRefrence)
 	}
 	else {
 		transState = SERVER_OK;
-		printf("SERVER_OK\n");
+		
 		return transState;
 	}
 }
 
 EN_serverError_t isAmountAvailable(ST_terminalData_t* termData, ST_accountsDB_t* accountRefrence)
 {
+	printf("acctual amount % f \n", accountRefrence->balance);
 	//check if transaction amount is available or not
-	if (termData->transAmount > accountRefrence->balance) {
+	if (termData->transAmount > (float)(accountRefrence->balance)) {
+		
 		printf("LOW_BALANCE\n");
 		return LOW_BALANCE;
 	}
@@ -118,12 +131,19 @@ EN_serverError_t saveTransaction(ST_transaction_t* transData)
 	transactionsDB[seqNum].cardHolderData = transData->cardHolderData;
 	transactionsDB[seqNum].terminalData = transData->terminalData;
 	transactionsDB[seqNum].transactionSequenceNumber = seqNum;
-	transactionsDB[seqNum].transState = receiveTransactionData(transData);
+
 	if (getTransaction(seqNum, transData) != SERVER_OK) {
 		printf("SAVING_FAILED\n");
+		transactionsDB[seqNum].transState = INTERNAL_SERVER_ERROR;
 		return SAVING_FAILED;
 	}
-	printf("SERVER_OK\n");
+	
+	transactionsDB[seqNum].transState = APPROVED;
+	int accountindex = linearSearch(accountsDB, transData->cardHolderData.primaryAccountNumber, 10);
+	accountsDB[accountindex].balance = accountsDB[accountindex].balance - transData->terminalData.transAmount;
+	
+
+
 	return SERVER_OK;
 }
 
@@ -135,7 +155,7 @@ EN_serverError_t getTransaction(uint32_t transactionSequenceNumber, ST_transacti
 		transData->terminalData = transactionsDB[seqNum].terminalData;
 		transData->transState = transactionsDB[seqNum].transState;
 		transData->transactionSequenceNumber = transactionsDB[seqNum].transactionSequenceNumber;
-		printf("SERVER_OK\n");
+		
 		return SERVER_OK;
 	}
 	printf("TRANSACTION_NOT_FOUND\n");

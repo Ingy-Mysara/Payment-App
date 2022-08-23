@@ -41,7 +41,7 @@ typedef struct ST_accountsDB_t
 }ST_accountsDB_t;
 
 ST_transaction_t transactionsDB[255];
-ST_accountsDB_t accountsDB[10];
+
 
 
 EN_transState_t receiveTransactionData(ST_transaction_t* transData);
